@@ -1,6 +1,6 @@
 'use strict';
 
-const fs = require('fs/promises');
+const fs = require('fs');
 const path = require('path');
 
 /**
@@ -14,31 +14,15 @@ const path = require('path');
 exports.cargarArchivo = function (id_archivo_guardado, ubicacion) {
   return new Promise(function (resolve, reject) {
     // Comprueba la ubicación del archivo
-    if (ubicacion === 'local') {
-      // Si la ubicación es local, lee el archivo localmente
-      const filePath = path.join(__dirname, `local/${id_archivo_guardado}.txt`);
-      
-      fs.readFile(filePath, 'utf8', (err, data) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(data);
-        }
-      });
-    } else if (ubicacion === 'nube') {
-      const filePath = path.join(__dirname, `nube/${id_archivo_guardado}.txt`);
-      
-      fs.readFile(filePath, 'utf8', (err, data) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(data);
-        }
-      });
-    } else {
-      // Si la ubicación no es 'local' ni 'nube', rechaza la promesa con un mensaje de error.
-      reject(new Error('Ubicación no válida. Debe ser "local" o "nube".'));
-    }
+    var filePath = path.join(process.cwd(), `/${ubicacion}/${id_archivo_guardado}.txt`);
+    fs.readFile(filePath, 'utf8', (err, data) => {
+      if (err) {
+        err.status = 404;
+        reject(err);
+      } else {
+        resolve(data);
+      }
+    });
   });
 };
 
@@ -54,39 +38,30 @@ exports.cargarArchivo = function (id_archivo_guardado, ubicacion) {
 exports.eliminarArchivo = function(id,ubicacion) {
   return new Promise(function (resolve, reject) {
     // Comprueba la ubicación del archivo
-    if (ubicacion === 'local') {
-      // Si la ubicación es local, elimina el archivo localmente
-      const filePath = path.join(__dirname, `local/${id}.txt`);
-      
+    var filePath = path.join(process.cwd(), `/${ubicacion}/${id}.txt`);
+    console.log(`File exists:${fs.existsSync(filePath)}\n`); 
+    if (fs.existsSync(filePath)) {
       fs.unlink(filePath, (err) => {
         if (err) {
           reject(err);
         } else {
-          resolve();
-        }
-      });
-    } else if (ubicacion === 'nube') {
-      // Si la ubicación es nube, elimina el archivo del cloud
-      const filePath = path.join(__dirname, `nube/${id}.txt`);
-      
-      fs.unlink(filePath, (err) => {
-        if (err) {
-          reject(err);
-        } else {
+          console.log("File deleted successfully\n"); 
           resolve();
         }
       });
     } else {
-      // Si la ubicación no es 'local' ni 'nube', rechaza la promesa con un mensaje de error.
-      reject(new Error('Ubicación no válida. Debe ser "local" o "nube".'));
+      const error = new Error("Error: El archivo de guardado no existe.");
+      error.status=404;
+      reject(error);
     }
+    
   });
 }
 
 
 /**
  * Guardar archivo
- * Guarda un archivo especificado en la nube o localmente.
+ * Guarda un archivo especificado en la nube o localmente. Si ya existía se sobreescribe.
  *
  * body ArchivoGuardado 
  * ubicacion String Ubicación del archivo (local o nube)
@@ -98,8 +73,10 @@ exports.guardarArchivo = function(body,ubicacion) {
     
     fs.writeFile(filePath, JSON.stringify(body.datos), 'utf8', (err) => {
       if (err) {
+        console.log(err); 
         reject(err);
       } else {
+        console.log("File written successfully\n"); 
         resolve();
       }
     });
