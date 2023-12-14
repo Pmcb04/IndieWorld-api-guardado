@@ -4,10 +4,8 @@ info:
   description: API para la gestión de guardado en una plataforma de videojuegos
   version: 1.0.0
 servers:
-- url: https://virtserver.swaggerhub.com/Devgram/ApiGuardado/1.0.0
-  description: SwaggerHub API Auto Mocking
-- url: https://virtserver.swaggerhub.com/Devgram/APIGuardado/1.0.0
-  description: SwaggerHub API Auto Mocking
+- url: https://indie-world-api-guardado.vercel.app/Devgram/ApiGuardado/1.0.0
+  description: Vercel Server Production
 paths:
   /datos/guardar:
     post:
