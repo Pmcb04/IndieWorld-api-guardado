@@ -46,3 +46,13 @@ module.exports.guardarArchivo = function guardarArchivo (req, res, next, body, u
       utils.writeJson(res, response);
     });
 };
+
+module.exports.getMetrics = function getMetrics (req, res, next) {
+  Datos.getMetrics()
+    .then(function (response) {
+      utils.writeJson(res, response);
+    })
+    .catch(function (response) {
+      utils.writeJson(res, response);
+    });
+};

@@ -2,6 +2,7 @@
 
 var path = require('path');
 var http = require('http');
+const Prometheus = require('prom-client')
 
 var oas3Tools = require('oas3-tools');
 var serverPort = 8080;
@@ -15,6 +16,8 @@ var options = {
 
 var expressAppConfig = oas3Tools.expressAppConfig(path.join(__dirname, 'api/openapi.yaml'), options);
 var app = expressAppConfig.getApp();
+
+const metricsInterval = Prometheus.collectDefaultMetrics()
 
 // Initialize the Swagger middleware
 http.createServer(app).listen(serverPort, function () {

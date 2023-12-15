@@ -110,6 +110,19 @@ paths:
         "400":
           description: Error en la solicitud
       x-swagger-router-controller: Datos
+  /metrics:
+    get:
+      tags:
+      - Datos
+      summary: Obtiene metricas de la api
+      description: Obtiene metricas de la api
+      operationId: getMetrics
+      responses:
+        "201":
+          description: item created
+        "400":
+          description: "invalid input, object invalid"
+      x-swagger-router-controller: Datos
 components:
   schemas:
     ArchivoGuardado:
